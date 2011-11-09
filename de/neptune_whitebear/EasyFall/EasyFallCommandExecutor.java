@@ -20,12 +20,13 @@
 
 package de.neptune_whitebear.EasyFall;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class EasyFallCommandExecutor implements CommandExecutor
+class EasyFallCommandExecutor implements CommandExecutor
 {
 
     public EasyFallCommandExecutor( EasyFallListHandler efListHandler )
@@ -41,16 +42,21 @@ public class EasyFallCommandExecutor implements CommandExecutor
             Player pSender = ( Player ) sender;
             if( label.toLowerCase().equals( "fallon" ) )
             {
-                if( listHandler.hasPermissions(pSender) )
+                if( listHandler.hasPermissions( pSender ) )
                 {
-                    listHandler.removePlayer( pSender );
+                    listHandler.enableFallDamage( pSender );
+                } else
+                {
+                    pSender.sendMessage( ChatColor.RED + "[EasyFall] You don't have the the necessary permissions to use this command." );
                 }
-            }
-            else if( label.toLowerCase().equals( "falloff" ))
+            } else if( label.toLowerCase().equals( "falloff" ) )
             {
-                if( listHandler.hasPermissions( pSender ))
+                if( listHandler.hasPermissions( pSender ) )
                 {
-                    listHandler.addPlayer( pSender );
+                    listHandler.disableFallDamage( pSender );
+                } else
+                {
+                    pSender.sendMessage( ChatColor.RED + "[EasyFAll] You don't have the the necessary permissions to use this command." );
                 }
             }
 
@@ -60,5 +66,5 @@ public class EasyFallCommandExecutor implements CommandExecutor
 
     }
 
-    EasyFallListHandler listHandler;
+    private final EasyFallListHandler listHandler;
 }

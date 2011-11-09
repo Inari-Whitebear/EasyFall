@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 
-public class EasyFallPlayerListener extends PlayerListener
+class EasyFallPlayerListener extends PlayerListener
 {
 
     public EasyFallPlayerListener( EasyFallListHandler efListHandler )
@@ -35,14 +35,14 @@ public class EasyFallPlayerListener extends PlayerListener
 
     public void onPlayerJoin( PlayerJoinEvent ev )
     {
-        if( listHandler.hasPermissions( ev.getPlayer() ) ) listHandler.addPlayer( ev.getPlayer() );
+        if( listHandler.hasPermissions( ev.getPlayer() ) ) listHandler.disableFallDamage( ev.getPlayer() );
     }
 
     public void onPlayerQuit( PlayerQuitEvent ev )
     {
-        listHandler.removePlayer( ev.getPlayer() );
+        listHandler.enableFallDamage( ev.getPlayer() );
     }
 
-    EasyFallListHandler listHandler;
+    private final EasyFallListHandler listHandler;
 
 }

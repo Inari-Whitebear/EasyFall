@@ -1,0 +1,16 @@
+name: EasyFall
+description: Disables Falling Damage (command-based)
+version: 0.5 Beta
+
+commands:
+    fallOn:
+        description: Enable falling damage
+        permission: easyfall.use
+    fallOff:
+        description: Disable falling damage
+        permission: easyfall.use
+
+permissions:
+    easyfall.use:
+        description: Allows usage of EasyFall
+        default: op

@@ -23,7 +23,6 @@ import com.nijiko.permissions.PermissionHandler;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class EasyFallListHandler
 {
@@ -38,37 +37,39 @@ public class EasyFallListHandler
     {
         if( usePermissions )
         {
-            return permHandler.has( player, "easyfall.use" );
-        } else return player.hasPermission( "easyfall.use" );
+            if( permHandler != null ) return permHandler.has( player, "easyfall.use" );
+            else return player.hasPermission( "easyfall.use" );
+
+        } else return player.isOp();
     }
 
-    public boolean addPlayer( Player player )
+    public boolean disableFallDamage( Player player )
     {
-        if( !enabledPlayers.contains( player.getName() ) )
+        if( !disabledDamageList.contains( player.getName() ) )
         {
-            enabledPlayers.add( player.getName() );
+            disabledDamageList.add( player.getName() );
             return true;
         }
         return false;
     }
 
-    public boolean removePlayer( Player player )
+    public boolean enableFallDamage( Player player )
     {
-        if( enabledPlayers.contains( player.getName() ) )
+        if( disabledDamageList.contains( player.getName() ) )
         {
-            enabledPlayers.remove( player.getName() );
+            disabledDamageList.remove( player.getName() );
             return true;
         }
         return false;
     }
 
-    public boolean hasEnabled( Player player )
+    public boolean hasDamageDisabled( Player player )
     {
-        return enabledPlayers.contains( player.getName() );
+        return disabledDamageList.contains( player.getName() );
     }
 
-    boolean usePermissions;
-    PermissionHandler permHandler;
-    HashSet<String> enabledPlayers;
+    private final boolean usePermissions;
+    private final PermissionHandler permHandler;
+    private HashSet<String> disabledDamageList = new HashSet<String>();
 
 }

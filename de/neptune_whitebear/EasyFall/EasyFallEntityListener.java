@@ -25,12 +25,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityListener;
 
 
-public class EasyFallEntityListener extends EntityListener
+class EasyFallEntityListener extends EntityListener
 {
 
-    public EasyFallEntityListener( EasyFallListHandler efListHanlder )
+    public EasyFallEntityListener( EasyFallListHandler efListHandler )
     {
-        listHandler = efListHanlder;
+        listHandler = efListHandler;
     }
 
     public void onEntityDamage( EntityDamageEvent event )
@@ -40,11 +40,11 @@ public class EasyFallEntityListener extends EntityListener
         if( event.getEntity() instanceof Player && event.getCause() == EntityDamageEvent.DamageCause.FALL )
         {
             Player ePlayer = ( Player ) event.getEntity();
-            if( listHandler.hasEnabled( ePlayer ) ) event.setCancelled( true );
+            if( listHandler.hasDamageDisabled( ePlayer ) ) event.setCancelled( true );
         }
 
     }
 
 
-    EasyFallListHandler listHandler;
+    private final EasyFallListHandler listHandler;
 }

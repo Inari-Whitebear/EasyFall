@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public class EasyFall extends JavaPlugin
+class EasyFall extends JavaPlugin
 {
     public void onDisable()
     {
@@ -39,6 +39,7 @@ public class EasyFall extends JavaPlugin
 
     public void onEnable()
     {
+        mcLogger = Logger.getLogger( "Minecraft" );
         PluginManager pluginMng = this.getServer().getPluginManager();
         PluginDescriptionFile pluginDesc = this.getDescription();
 
@@ -48,11 +49,12 @@ public class EasyFall extends JavaPlugin
                                          .append( ")] " )
                                          .toString();
 
-
-        tryEnablePermissions();
-
         FileConfiguration config = this.getConfig();
         setDefaults( config );
+        saveConfig();
+
+        usePermissions = config.getBoolean( "UsePermissions" );
+        tryEnablePermissions();
 
         listHandler = new EasyFallListHandler( permHandler, usePermissions );
 
@@ -61,15 +63,12 @@ public class EasyFall extends JavaPlugin
         this.getCommand( "falloff" ).setExecutor( cmdExec );
 
         EasyFallEntityListener entListener = new EasyFallEntityListener( listHandler );
-
         pluginMng.registerEvent( Event.Type.ENTITY_DAMAGE, entListener, Event.Priority.Low, this );
 
         EasyFallPlayerListener playerListener = new EasyFallPlayerListener( listHandler );
-
         if( config.getBoolean( "AutoActivateOnLogin" ) )
             pluginMng.registerEvent( Event.Type.PLAYER_LOGIN, playerListener, Event.Priority.Normal, this );
         pluginMng.registerEvent( Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this );
-
 
         logMsg( "Enabled successfully." );
     }
@@ -77,6 +76,8 @@ public class EasyFall extends JavaPlugin
     void setDefaults( FileConfiguration config )
     {
         config.getDefaults().set( "AutoActivateOnLogin", false );
+        config.getDefaults().set( "UsePermissions", true );
+        config.options().copyDefaults( true );
     }
 
     void tryEnablePermissions()
@@ -87,22 +88,22 @@ public class EasyFall extends JavaPlugin
                     .getPlugin( "Permissions" ) ).getHandler();
             if( pHandler != null )
             {
-                usePermissions = true;
+                //usePermissions = true;
                 permHandler = pHandler;
             }
         }
     }
 
-    public void logMsg( String msg )
+    void logMsg( String msg )
     {
         mcLogger.info( prefix + msg );
     }
 
-    EasyFallCommandExecutor cmdExec;
+    private EasyFallCommandExecutor cmdExec;
     EasyFallListHandler listHandler;
-    Logger mcLogger;
-    String prefix;
-    boolean usePermissions;
-    PermissionHandler permHandler;
+    private Logger mcLogger;
+    private String prefix;
+    private boolean usePermissions;
+    private PermissionHandler permHandler;
 
 }
