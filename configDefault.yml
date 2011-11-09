@@ -1,0 +1,5 @@
+AutoActivateOnLogin: false
+UsePermissions: true
+disableFallDamageMessage: "[EasyFall] Falling damage now off. Have fun :)"
+enableFallDamageMessage: "[EasyFall] Falling damage back on, be cautious!"
+noPermissionsMessage: "[EasyFall] You're not allowed to use this command."

@@ -1,6 +1,7 @@
 name: EasyFall
 description: Disables Falling Damage (command-based)
-version: 0.5 Beta
+version: 0.7 Beta
+main: de.neptune_whitebear.EasyFall.EasyFall
 
 commands:
     fallOn:

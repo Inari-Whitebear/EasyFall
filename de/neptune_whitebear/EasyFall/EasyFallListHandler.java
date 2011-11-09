@@ -20,6 +20,8 @@
 package de.neptune_whitebear.EasyFall;
 
 import com.nijiko.permissions.PermissionHandler;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -27,10 +29,11 @@ import java.util.HashSet;
 public class EasyFallListHandler
 {
 
-    public EasyFallListHandler( PermissionHandler pPermHandler, boolean bUsePermissions )
+    public EasyFallListHandler( PermissionHandler pPermHandler, boolean bUsePermissions, FileConfiguration cConfig )
     {
         usePermissions = bUsePermissions;
         permHandler = pPermHandler;
+        config = cConfig;
     }
 
     public boolean hasPermissions( Player player )
@@ -43,24 +46,24 @@ public class EasyFallListHandler
         } else return player.isOp();
     }
 
-    public boolean disableFallDamage( Player player )
+    public void disableFallDamage( Player player )
     {
         if( !disabledDamageList.contains( player.getName() ) )
         {
             disabledDamageList.add( player.getName() );
-            return true;
+
         }
-        return false;
+        player.sendMessage( ChatColor.AQUA + config.getString( "disableFallDamageMessage" ) );
     }
 
-    public boolean enableFallDamage( Player player )
+    public void enableFallDamage( Player player )
     {
         if( disabledDamageList.contains( player.getName() ) )
         {
             disabledDamageList.remove( player.getName() );
-            return true;
+
         }
-        return false;
+        player.sendMessage( ChatColor.AQUA + config.getString( "enableFallDamageMessage" ) );
     }
 
     public boolean hasDamageDisabled( Player player )
@@ -71,5 +74,6 @@ public class EasyFallListHandler
     private final boolean usePermissions;
     private final PermissionHandler permHandler;
     private HashSet<String> disabledDamageList = new HashSet<String>();
+    private FileConfiguration config;
 
 }

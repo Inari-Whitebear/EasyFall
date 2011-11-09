@@ -23,15 +23,25 @@ package de.neptune_whitebear.EasyFall;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.security.auth.login.Configuration;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Logger;
 
-class EasyFall extends JavaPlugin
+public class EasyFall extends JavaPlugin
 {
+
+    public EasyFall()
+    {
+
+    }
+
     public void onDisable()
     {
         logMsg( "Disabled successfully." );
@@ -51,14 +61,15 @@ class EasyFall extends JavaPlugin
 
         FileConfiguration config = this.getConfig();
         setDefaults( config );
+        config.options().header( "" );
         saveConfig();
 
         usePermissions = config.getBoolean( "UsePermissions" );
-        tryEnablePermissions();
+        if( usePermissions ) tryEnablePermissions();
 
-        listHandler = new EasyFallListHandler( permHandler, usePermissions );
+        listHandler = new EasyFallListHandler( permHandler, usePermissions, config );
 
-        cmdExec = new EasyFallCommandExecutor( listHandler );
+        cmdExec = new EasyFallCommandExecutor( listHandler, config );
         this.getCommand( "fallon" ).setExecutor( cmdExec );
         this.getCommand( "falloff" ).setExecutor( cmdExec );
 
@@ -67,7 +78,7 @@ class EasyFall extends JavaPlugin
 
         EasyFallPlayerListener playerListener = new EasyFallPlayerListener( listHandler );
         if( config.getBoolean( "AutoActivateOnLogin" ) )
-            pluginMng.registerEvent( Event.Type.PLAYER_LOGIN, playerListener, Event.Priority.Normal, this );
+            pluginMng.registerEvent( Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this );
         pluginMng.registerEvent( Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this );
 
         logMsg( "Enabled successfully." );
@@ -75,9 +86,23 @@ class EasyFall extends JavaPlugin
 
     void setDefaults( FileConfiguration config )
     {
-        config.getDefaults().set( "AutoActivateOnLogin", false );
-        config.getDefaults().set( "UsePermissions", true );
+        try
+        {
+
+            URL url = getClass().getClassLoader().getResource( "configDefault.yml" );
+            URLConnection con = url.openConnection();
+            con.setUseCaches( false );
+            YamlConfiguration yaml = new YamlConfiguration();
+            yaml.load( con.getInputStream() );
+            config.setDefaults( yaml );
+        } catch( Exception ex )
+        {
+            logMsg( "ERROR; Unable to load default config file. =>" );
+            logMsg( ex.toString() );
+        }
+
         config.options().copyDefaults( true );
+
     }
 
     void tryEnablePermissions()
@@ -90,8 +115,14 @@ class EasyFall extends JavaPlugin
             {
                 //usePermissions = true;
                 permHandler = pHandler;
+                logMsg( "Using Permissions/PermissionsEx." );
             }
         }
+        if( permHandler == null )
+        {
+            logMsg( "Using SuperPerms." );
+        }
+
     }
 
     void logMsg( String msg )

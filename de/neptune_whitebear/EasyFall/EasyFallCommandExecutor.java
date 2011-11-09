@@ -24,19 +24,20 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 class EasyFallCommandExecutor implements CommandExecutor
 {
 
-    public EasyFallCommandExecutor( EasyFallListHandler efListHandler )
+    public EasyFallCommandExecutor( EasyFallListHandler efListHandler, FileConfiguration cConfig )
     {
         listHandler = efListHandler;
+        config = cConfig;
     }
 
     public boolean onCommand( CommandSender sender, Command command, String label, String[] args )
     {
-
         if( sender instanceof Player )
         {
             Player pSender = ( Player ) sender;
@@ -47,7 +48,7 @@ class EasyFallCommandExecutor implements CommandExecutor
                     listHandler.enableFallDamage( pSender );
                 } else
                 {
-                    pSender.sendMessage( ChatColor.RED + "[EasyFall] You don't have the the necessary permissions to use this command." );
+                    pSender.sendMessage( ChatColor.RED + config.getString( "noPermissionsMessage" ) );
                 }
             } else if( label.toLowerCase().equals( "falloff" ) )
             {
@@ -56,7 +57,7 @@ class EasyFallCommandExecutor implements CommandExecutor
                     listHandler.disableFallDamage( pSender );
                 } else
                 {
-                    pSender.sendMessage( ChatColor.RED + "[EasyFAll] You don't have the the necessary permissions to use this command." );
+                    pSender.sendMessage( ChatColor.RED + config.getString( "noPermissionsMessage" ) );
                 }
             }
 
@@ -67,4 +68,5 @@ class EasyFallCommandExecutor implements CommandExecutor
     }
 
     private final EasyFallListHandler listHandler;
+    private final FileConfiguration config;
 }
